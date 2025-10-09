@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Header from '../Header';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
@@ -105,13 +106,18 @@ function Login() {
       const data = await resp.json();
       
       if (resp.ok) {
+        // prefer the full user object returned by the backend, fall back to individual fields
+        const returnedUser = data.user || {};
+        const userIdFromBackend = data.userId || returnedUser.id || returnedUser.userId;
         const userData = {
-          email: googleEmail,
-          id: data.userId,
-          name: data.name,
-          authMethods: data.authMethods,
-          hasPassword: data.hasPassword
+          email: googleEmail || returnedUser.email,
+          id: userIdFromBackend,
+          name: returnedUser.name || data.name || googleName,
+          authMethods: returnedUser.authMethods || data.authMethods || ['google'],
+          hasPassword: data.hasPassword || !!returnedUser.password
         };
+        // store token returned by backend for API calls
+        if (data.token) localStorage.setItem('authToken', data.token);
         
         login(userData);
         
@@ -145,6 +151,7 @@ function Login() {
   return (
     <>
       <div>
+        <Header />
        
         <div className="cont-auth">
         <fieldset className='field'>

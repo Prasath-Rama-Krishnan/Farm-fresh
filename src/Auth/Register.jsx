@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Header from '../Header';
 import { Link, useNavigate } from 'react-router-dom';
 import './Auth.css';
 import API_BASE_URL from '../config/api.js';
@@ -94,6 +95,7 @@ function Register() {
   return (
     <>
       <div>
+        <Header />
         
    <div className="cont-auth">   <fieldset className='field'>
     <center><div className="icon-auth"> <h1>< BiSolidUserRectangle /></h1></div> </center>  <br />

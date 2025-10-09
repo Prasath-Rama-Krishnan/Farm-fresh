@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Header from '../Header';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './auth.css';
@@ -107,7 +108,9 @@ function SetPassword() {
   }
 
   return (
-    <div className="cont-auth">
+    <>
+      <Header />
+      <div className="cont-auth">
       <fieldset className='field'>
         <center>
           <div className="icon-auth">
@@ -158,6 +161,7 @@ function SetPassword() {
         </form>
       </fieldset>
     </div>
+    </>
   );
 }
 

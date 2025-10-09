@@ -286,8 +286,8 @@ app.post('/google-auth', async(req, res) => {
         user.googleId = googleId;
         if (name) user.name = name;
     } else {
-        // Create new user with Google authentication
-        user = createOrUpdateUser(email, null, googleId, name);
+        // Create new user with Google authentication (await the async creator)
+        user = await createOrUpdateUser(email, null, googleId, name);
     }
 
     // Generate JWT token for Google auth
@@ -298,6 +298,8 @@ app.post('/google-auth', async(req, res) => {
     res.status(200).json({
         message: 'Google authentication successful!',
         token: token,
+        // include both a top-level userId (used by some frontend callers) and a user object
+        userId: user.id,
         user: {
             id: user.id,
             email: user.email,
