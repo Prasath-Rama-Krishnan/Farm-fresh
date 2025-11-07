@@ -101,7 +101,8 @@ app.use(cors({
         'http://localhost:5173',
         'http://localhost:3000',
         'http://localhost:5174',
-        'https://farm-fresh-selling-platform.vercel.app'
+        'https://farm-fresh-selling-platform.vercel.app',
+        'https://farm-fresh-dm55c1ids-prasaths-projects-809bbdc3.vercel.app'
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
