@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { FaUser } from 'react-icons/fa';
-import './Auth.css';
+import './auth.css';
 import API_BASE_URL from '../config/api.js';
 
 function Login() {
