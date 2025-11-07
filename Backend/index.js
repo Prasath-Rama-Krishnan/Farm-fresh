@@ -6,6 +6,8 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const Producer = require('./producerdb');
+const path = require('path');
+const fs = require('fs');
 
 // JWT Secret - use environment variable or fallback
 const JWT_SECRET = process.env.JWT_SECRET || 'your-fallback-secret-key-for-development';
@@ -107,6 +109,20 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve frontend static files if present (single full-stack deployment)
+const staticPath = path.join(__dirname, '..', 'dist');
+if (fs.existsSync(staticPath)) {
+    app.use(express.static(staticPath));
+
+    // SPA fallback for non-API routes
+    app.get('/*', (req, res, next) => {
+        if (req.path.startsWith('/api') || req.path.startsWith('/health') || req.path.startsWith('/register') || req.path.startsWith('/login') || req.path.startsWith('/producer') || req.path.startsWith('/getproducer') || req.path.startsWith('/google-auth') || req.path.startsWith('/set-password')) {
+            return next();
+        }
+        res.sendFile(path.join(staticPath, 'index.html'));
+    });
+}
 
 // Health check endpoint
 app.get('/health', (req, res) => {
