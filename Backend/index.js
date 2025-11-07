@@ -96,14 +96,36 @@ connectDB().then(connected => {
 });
 
 // CORS configuration
+// Allowlist can be configured via FRONTEND_URLS env var (comma-separated).
+// Also allow any Vercel preview/deployment host (*.vercel.app) to simplify previews.
+const defaultFrontends = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:5174',
+    'https://farm-fresh-selling-platform.vercel.app',
+    'https://farm-fresh-dm55c1ids-prasaths-projects-809bbdc3.vercel.app'
+];
+const frontendsFromEnv = process.env.FRONTEND_URLS ? process.env.FRONTEND_URLS.split(',').map(s => s.trim()).filter(Boolean) : [];
+const allowedOrigins = Array.from(new Set([...defaultFrontends, ...frontendsFromEnv]));
+
 app.use(cors({
-    origin: [
-        'http://localhost:5173',
-        'http://localhost:3000',
-        'http://localhost:5174',
-        'https://farm-fresh-selling-platform.vercel.app',
-        'https://farm-fresh-dm55c1ids-prasaths-projects-809bbdc3.vercel.app'
-    ],
+    origin: (origin, callback) => {
+        // Allow non-browser requests (e.g., curl, server-to-server) where origin is undefined
+        if (!origin) return callback(null, true);
+
+        // Exact match whitelist
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+
+        // Allow any Vercel preview/deployment domain (e.g. *.vercel.app)
+        try {
+            if (origin.endsWith('.vercel.app') || origin.endsWith('.vercel.sh')) return callback(null, true);
+        } catch (err) {
+            // fall through to reject
+        }
+
+        // Reject other origins
+        return callback(new Error('CORS policy: This origin is not allowed - ' + origin), false);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with']
