@@ -415,17 +415,20 @@ app.use('/api/*', (req, res) => {
     res.status(404).json({ error: 'API endpoint not found' });
 });
 
-// Export the app for Vercel
+// Export the app for serverless environments or other hosts
 module.exports = app;
 
-// Start the server
-const server = app.listen(port, '0.0.0.0', () => {
-    console.log(`Server is running on http://localhost:${port}`);    
-}).on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-        console.error(`Port ${port} is already in use. Please stop any other servers using this port.`);
-    } else {
-        console.error('Failed to start server:', err);
-    }
-    process.exit(1);
-});
+// Start the server only when this file is run directly (not when required/imported)
+// This makes the app safe to require() from serverless wrappers (Vercel) or tests.
+if (require.main === module) {
+    const server = app.listen(port, '0.0.0.0', () => {
+        console.log(`Server is running on http://localhost:${port}`);
+    }).on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+            console.error(`Port ${port} is already in use. Please stop any other servers using this port.`);
+        } else {
+            console.error('Failed to start server:', err);
+        }
+        process.exit(1);
+    });
+}
