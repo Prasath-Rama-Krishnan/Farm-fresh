@@ -140,7 +140,7 @@ function App(){
     <div className="about-container1">
     
     <div className="about-img1"><center><img src="https://i.pinimg.com/originals/83/27/8e/83278ee8facf9002f7852fc645d201c1.gif" alt="" /></center></div><div className="aboutit1">
-     <center><h1>Benifits</h1></center> 
+     <center><h1>Benefits</h1></center> 
       <p>
       <strong> 1.  </strong>  Fresh products sourced directly from farmers.
       <br /><br />
