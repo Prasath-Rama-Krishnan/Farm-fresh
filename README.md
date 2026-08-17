@@ -2,7 +2,7 @@
 
 A full-stack **Farm Fresh Product Selling Platform** that connects farmers and consumers directly, allowing producers to list their fresh farm products and consumers to browse available products.
 
-The application provides user authentication, producer product management, consumer browsing, product details, and user-specific product management through a **React frontend, Node.js/Express backend, and MongoDB database**.
+The application provides user authentication, producer product management, consumer browsing, product details, and user-specific product management using a **React frontend, Node.js/Express backend, and MongoDB database**.
 
 ---
 
@@ -41,17 +41,15 @@ Each product is associated with the user who added it, allowing the application 
 
 ### 🔐 User Authentication
 
-The application supports multiple authentication methods:
+The application supports:
 
 * User registration with email and password
-* Secure password hashing using **bcrypt**
+* Secure password hashing using **bcryptjs**
 * Login using email and password
-* **Google Sign-In**
-* JWT-based authentication
-* 24-hour JWT token expiration
-* Password setup for Google-authenticated users
+* **JWT-based authentication**
+* JWT token expiration of 24 hours
 
-The backend implements separate registration, login, Google authentication, and password-setting endpoints.
+The backend implements separate registration and login endpoints.
 
 ---
 
@@ -91,7 +89,7 @@ Producers can manage their listed products through:
 * Update product
 * Delete product
 
-The backend provides dedicated APIs for creating, retrieving, updating and deleting producer records.
+The backend provides dedicated APIs for creating, retrieving, updating, and deleting product records.
 
 ---
 
@@ -110,12 +108,13 @@ The application can retrieve products belonging to a specific user, allowing pro
                       │
              ┌────────┴────────┐
              │                 │
-          Producer          Consumer
+         Producer           Consumer
              │                 │
              ▼                 ▼
-       Add Products       Browse Products
+       Add Products      Browse Products
              │                 │
              └────────┬────────┘
+                      │
                       ▼
                Node.js API
                       │
@@ -137,8 +136,8 @@ Product Details
 MongoDB
        ↓
 Manage Product
-       ├── Update
-       └── Delete
+   ├── Update
+   └── Delete
 ```
 
 ### Consumer Flow
@@ -195,20 +194,32 @@ Explore Available Farm Products
 
 ## 🛠️ Technologies Used
 
-| Layer                 | Technologies        |
-| --------------------- | ------------------- |
-| Frontend              | React 18, Vite      |
-| Routing               | React Router        |
-| HTTP Client           | Axios               |
-| UI / Icons            | CSS, React Icons    |
-| Authentication        | JWT, bcryptjs       |
-| Google Authentication | Google OAuth        |
-| Backend               | Node.js, Express.js |
-| Database              | MongoDB, Mongoose   |
-| Configuration         | dotenv              |
-| Deployment            | Vercel              |
+| Layer          | Technologies        |
+| -------------- | ------------------- |
+| Frontend       | React 18, Vite      |
+| Routing        | React Router        |
+| HTTP Client    | Axios               |
+| UI / Icons     | CSS, React Icons    |
+| Authentication | JWT, bcryptjs       |
+| Backend        | Node.js, Express.js |
+| Database       | MongoDB, Mongoose   |
+| Configuration  | dotenv              |
+| Deployment     | Vercel              |
 
-The project's `package.json` includes React, React Router, Axios, Google OAuth, JWT decoding, Express, CORS, Mongoose, JSON Web Token, Body Parser and dotenv.
+### Main Technologies
+
+* **React** – Frontend user interface
+* **Vite** – Frontend development and build tool
+* **React Router** – Client-side routing
+* **Axios** – API communication
+* **Node.js** – Backend runtime
+* **Express.js** – REST API development
+* **MongoDB** – Database
+* **Mongoose** – MongoDB object modeling
+* **JWT** – Authentication token generation
+* **bcryptjs** – Password hashing
+* **dotenv** – Environment variable management
+* **Vercel** – Deployment
 
 ---
 
@@ -261,8 +272,6 @@ Farm-fresh/
 └── README.md
 ```
 
-The current repository contains dedicated authentication, components, context, configuration, routing and product-related pages on the frontend, along with a separate `Backend` directory.
-
 ---
 
 ## 🔐 Authentication Flow
@@ -287,27 +296,43 @@ JWT Token
 Authenticated User
 ```
 
-Passwords are hashed with bcrypt before being stored, and successful login generates a JWT token with a 24-hour expiration.
+Passwords are hashed using **bcryptjs** before being stored.
 
-### Google Sign-In
+During successful login, the backend generates a JWT token with a **24-hour expiration**.
+
+The JWT token is used to maintain the authenticated user's session.
+
+---
+
+## 🔑 JWT Authentication
+
+JWT is used for authentication in this project.
+
+The backend uses the `jsonwebtoken` package to generate authentication tokens after successful login.
+
+The JWT token contains user-related information and is generated using a secret key stored in the environment variables.
+
+The token has a **24-hour expiration period**.
+
+### JWT Flow
 
 ```text
-User
- ↓
-Google Sign-In
- ↓
-Google Account Information
- ↓
-Backend /google-auth
- ↓
-Create or Update User
- ↓
-JWT Token
- ↓
+User Login
+    ↓
+Email + Password
+    ↓
+Password Verification
+    ↓
+JWT Token Generation
+    ↓
+Token Returned to Client
+    ↓
 Authenticated User
 ```
 
-The project also supports linking password authentication to an existing Google-authenticated account.
+The JWT secret is stored securely using the `JWT_SECRET` environment variable.
+
+> **Note:** The current implementation uses JWT for authentication and token generation. The product APIs currently use the user ID to retrieve user-specific products.
 
 ---
 
@@ -337,12 +362,10 @@ The product schema uses MongoDB through Mongoose and automatically records the p
 
 ### Authentication
 
-| Method | Endpoint        | Description                     |
-| ------ | --------------- | ------------------------------- |
-| POST   | `/register`     | Register a new user             |
-| POST   | `/login`        | Login with email and password   |
-| POST   | `/google-auth`  | Authenticate using Google       |
-| POST   | `/set-password` | Set a password for Google users |
+| Method | Endpoint    | Description                   |
+| ------ | ----------- | ----------------------------- |
+| POST   | `/register` | Register a new user           |
+| POST   | `/login`    | Login with email and password |
 
 ### Product Management
 
@@ -360,8 +383,6 @@ The product schema uses MongoDB through Mongoose and automatically records the p
 | ------ | --------- | ------------------------ |
 | GET    | `/health` | Check backend/API status |
 
-These endpoints are implemented directly in the project's Express backend.
-
 ---
 
 ## ⚙️ Installation Guide
@@ -370,7 +391,6 @@ These endpoints are implemented directly in the project's Express backend.
 
 ```bash
 git clone https://github.com/Prasath-Rama-Krishnan/Farm-fresh.git
-
 cd Farm-fresh
 ```
 
@@ -406,7 +426,6 @@ Open a new terminal:
 
 ```bash
 cd Backend
-
 npm install
 ```
 
@@ -439,9 +458,9 @@ PORT=5172
 FRONTEND_URLS=http://localhost:5173
 ```
 
-> ⚠️ Do not commit your `.env` file or private credentials to GitHub.
+> ⚠️ **Do not commit your `.env` file or private credentials to GitHub.**
 
-The backend reads the MongoDB connection string and JWT secret from environment variables and includes retry/error handling for MongoDB connectivity.
+The backend reads the MongoDB connection string and JWT secret from environment variables.
 
 ---
 
@@ -453,7 +472,7 @@ The frontend is deployed using **Vercel**.
 
 https://farm-fresh-rosy.vercel.app/
 
-The backend is configured to support the deployed Vercel frontend through CORS and also supports Vercel/serverless deployment scenarios.
+The backend is configured to support the deployed Vercel frontend through CORS.
 
 ---
 
@@ -466,12 +485,12 @@ Through this project, I gained practical experience in:
 * React Router navigation
 * Creating REST APIs with Express.js
 * Working with MongoDB and Mongoose
-* Implementing JWT authentication
-* Password hashing with bcrypt
-* Google OAuth integration
+* Implementing JWT-based authentication
+* Password hashing with bcryptjs
 * Managing user-specific data
 * CRUD operations
 * Connecting frontend and backend
+* Using Axios for API communication
 * Handling environment variables
 * Deploying a React application using Vercel
 * Implementing responsive user interfaces
@@ -479,6 +498,8 @@ Through this project, I gained practical experience in:
 ---
 
 ## 🔮 Future Improvements
+
+The following features can be added in future versions:
 
 * Add online payment integration
 * Add product image uploads
